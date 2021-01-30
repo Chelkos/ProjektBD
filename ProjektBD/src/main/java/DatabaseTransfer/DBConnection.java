@@ -1,26 +1,15 @@
 package DatabaseTransfer;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-
 import com.mysql.cj.jdbc.MysqlDataSource;
 
 
@@ -256,15 +245,16 @@ return result;
     }
     public String databaseBackup(String savePath)
     {
-    	String executeCmd = "mysqldump -u Admin -p Adminpass --database gameshop -r " + savePath;
+    	String executeCmd = "mysqldump -uAdmin -pAdminpass --database gameshop -r ~/Pobrane/ProjektBD/backup.sql";
+    	String[] cmdArray=new String[]{"/bin/sh", "-c", executeCmd};
     	 try {
     		 
-    		 Process runtimeProcess = Runtime.getRuntime().exec(executeCmd);
+    		 Process runtimeProcess = Runtime.getRuntime().exec(cmdArray);
     	        int processComplete = runtimeProcess.waitFor();
     	        if (processComplete == 0) {
-    	            return "Backup Complete";
+    	            result="Backup Complete";
     	        } else {
-    	           return "Backup Failure";
+    	           result="Backup Failure";
     	        }
     	 }
     	 catch(Exception e)
@@ -276,9 +266,10 @@ return result;
     }
     public String databaseRestore(String restorePath)
     {
-    	 String[] executeCmd = new String[]{"mysql gameshop -u Admin -p Adminpass -e", " source " + restorePath};
+    	 String executeCmd = "mysql -ukacper -p12345 gameshop < " + restorePath;
+    	 String[] cmdArray=new String[]{"/bin/sh", "-c", executeCmd};
     	try {
-    		 Process runtimeProcess = Runtime.getRuntime().exec(executeCmd);
+    		 Process runtimeProcess = Runtime.getRuntime().exec(cmdArray);
              int processComplete = runtimeProcess.waitFor();
              if (processComplete == 0) {
                 return "Success";

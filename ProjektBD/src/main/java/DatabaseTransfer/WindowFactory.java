@@ -1,33 +1,16 @@
 package DatabaseTransfer;
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.Component;
+
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.GridBagLayout;
-import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
-import java.io.PrintWriter;
-import java.net.Socket;
-import javax.sql.DataSource;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import DatabaseTransfer.DBConnection.Invoice;
 import DatabaseTransfer.DBConnection.Product;
@@ -81,9 +64,9 @@ public class WindowFactory {
 	WindowFactory(DBConnection connection)
 	{
 		int x=150,y=75;
-		window=new JFrame();
+		window=new JFrame("Main menu");
 		window.setSize(1000,500);
-		window.setLayout(new GridLayout(3,4));
+		window.setLayout(new GridLayout(3,5));
 		buttons=new HashMap<String,JButton>();
 		buttons.put("display_cash",new JButton("Display cash"));
 		buttons.put("pay_salary",new JButton("Pay salary"));
@@ -97,6 +80,8 @@ public class WindowFactory {
 		buttons.put("create_invoice",new JButton("Create invoice"));
 		buttons.put("restock",new JButton("Restock"));
 		buttons.put("add_client",new JButton("Add client"));
+		buttons.put("backup", new JButton("Backup"));
+		buttons.put("restore", new JButton("Restore"));
 		
 		buttons.get("display_cash").addMouseListener(new MouseAdapter() {
 	    	public void mousePressed(MouseEvent e) {
@@ -293,6 +278,33 @@ public class WindowFactory {
 	    	}
 	    });
 		
+		buttons.get("backup").addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				String[] labels=new String[]{"Destination: "};
+				MultiLabelWindow newWindow=new MultiLabelWindow("Backup", labels);
+				newWindow.setMouseListener(new MouseAdapter(){
+		        	public void mousePressed(MouseEvent e) {
+		        		String[] parameters=newWindow.getParameters();
+		        		String result=connection.databaseBackup(parameters[0]);
+		    	    	newWindow.setMessage(result);
+		        	}
+		        });
+			}
+		});
+		
+		buttons.get("restore").addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				String[] labels=new String[]{"Source: "};
+				MultiLabelWindow newWindow=new MultiLabelWindow("Restore", labels);
+				newWindow.setMouseListener(new MouseAdapter(){
+		        	public void mousePressed(MouseEvent e) {
+		        		String[] parameters=newWindow.getParameters();
+		        		String result=connection.databaseRestore(parameters[0]);
+		    	    	newWindow.setMessage(result);
+		        	}
+		        });
+			}
+		});
 	}
 	public JFrame create_window(String user)
 	{
@@ -309,6 +321,8 @@ public class WindowFactory {
 			window.add(buttons.get("create_invoice"));
 			window.add(buttons.get("restock"));
 			window.add(buttons.get("add_client"));
+			window.add(buttons.get("backup"));
+			window.add(buttons.get("restore"));
 		} else if(user.equals("Boss")) {
 			window.add(buttons.get("display_cash"));
 			window.add(buttons.get("add_worker"));
