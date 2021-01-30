@@ -27,11 +27,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class GameShop {
-    
-	
+	static JFrame  window;
 	private static void setupWindow()
 	{
-		  JFrame window;
+		 
 		  window = new JFrame();
 		  window.setSize(200, 180);
 		  window.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -61,6 +60,7 @@ public class GameShop {
 	}
 	private static void setupDataSource(String username,String password)
 	{
+		JFrame windowl;
 		WindowFactory factory;
 		DataSource dataSource;
 		ApplicationContext context;
@@ -71,13 +71,17 @@ public class GameShop {
 		try
 		{
 		dataSource.getConnection(username, password);
-		factory = new WindowFactory(username,dataSource);
+		window.setVisible(false);
+		factory = new WindowFactory();
+		windowl = factory.create_window(username, dataSource);
+		windowl.setVisible(true);
 		}
 		catch(Exception e)
 		{
 			System.out.println("Wrong password or username");
 			
 		}
+
 		
 	}
 	public static void main(String[] args) {
