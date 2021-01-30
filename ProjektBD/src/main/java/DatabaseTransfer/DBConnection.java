@@ -4,7 +4,9 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigInteger;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+
+
 public class DBConnection {
 	private String result;
     private DataSource dataSource;
@@ -185,8 +189,10 @@ return result;
     {
     	List<String> table = new ArrayList<String>();
     	String SQL = "CALL display_invoices(?);";
+    
     	try {
-    		 table = jdbcTemplateObject.queryForList(SQL,String.class,dateOfIssue);
+    		ResultSet rs = jdbcTemplateObject.execute(SQL);
+    		// table = jdbcTemplateObject.queryForList(SQL,String.class,dateOfIssue);
     		
     	}
     	catch(Exception e)
