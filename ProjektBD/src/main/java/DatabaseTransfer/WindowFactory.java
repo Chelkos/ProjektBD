@@ -29,6 +29,9 @@ import javax.swing.JTextField;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import DatabaseTransfer.DBConnection.Invoice;
+import DatabaseTransfer.DBConnection.Product;
+
 class MultiLabelWindow extends JFrame {
 	private JTextField[] textFields;
 	private JLabel messageLabel;
@@ -132,7 +135,7 @@ public class WindowFactory {
 		buttons.get("add_worker").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
 	    		String[] labels= new String[]{"Identifier: ", "Name: ", "Surname: ", "PESEL: ", "Position: ", "Wage: "};
-	    		MultiLabelWindow newWindow=new MultiLabelWindow("Display cash", labels);
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Add worker", labels);
 	        	newWindow.setMouseListener(new MouseAdapter(){
 	        		public void mousePressed(MouseEvent e) {
 	        			String[] parameters=newWindow.getParameters();
@@ -204,16 +207,22 @@ public class WindowFactory {
 		
 		buttons.get("display_products").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		String[] labels= new String[]{"Name: ", "Developer: ", "Release date: ", "Genre: ", "PEGI: ", "Price: "};
-	    		MultiLabelWindow newWindow=new MultiLabelWindow("Add product", labels);
+	    		String[] labels= new String[]{"Name: ", "Developer: ", "Lower bound: ", "Upper bound: "};
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Display products", labels);
 	        	newWindow.setMouseListener(new MouseAdapter(){
 	        		public void mousePressed(MouseEvent e) {
 	        			String[] parameters=newWindow.getParameters();
-	        			List<String> result=connection.displayProducts(parameters[0], parameters[1], parameters[2]
+	        			List<Product> result=connection.displayProducts(parameters[0], parameters[1], parameters[2]
 	        					, parameters[3]);
-	    	    		//newWindow.setMessage(result);
-	        			for(String s : result) {
-	        				System.out.println(s);
+	        			if(result.isEmpty()) {
+	        				newWindow.setMessage("Nothing found.");
+	        			} else {
+	        				newWindow.setMessage("");
+	        				System.out.println("Title; Developer; Release date; Genre; PEGI; Price");
+	        				for(Product p : result) {
+		        				System.out.println(p.name + ", " + p.developer + ", " + p.releaseDate + ", " +
+		        				p.genre + ", " + p.PEGI + ", " + p.price);
+		        			}
 	        			}
 	        		}
 	        	});
@@ -227,10 +236,17 @@ public class WindowFactory {
 	    		newWindow.setMouseListener(new MouseAdapter(){
 	        		public void mousePressed(MouseEvent e) {
 	        			String[] parameters=newWindow.getParameters();
-	        			List<String> result=connection.displayInvoices(parameters[0]);
-	        			for(String s : result) {
-	        				//newWindow.appendMessage(s);
-	        				System.out.println(s);
+	        			List<Invoice> result=connection.displayInvoices(parameters[0]);
+	        			if(result.isEmpty()) {
+	        				newWindow.setMessage("Nothing found.");
+	        			} else {
+	        				newWindow.setMessage("");
+	        				System.out.println("Date of issue; Terminal ID; Worker ID; Customer's name & surname; NIP; Netto; Tax");
+	        				for(Invoice i : result) {
+		        				System.out.println(i.dateOfIssue + ", " + i.terminalId + ", " + i.workerId + ", " 
+	        				+ i.customerName + i.customerSurname + ", " + i.NIP + ", " 
+	        				+ i.netto + ", " + i.tax);
+		        			}
 	        			}
 	        		}
 	        	});

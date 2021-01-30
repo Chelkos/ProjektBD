@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigInteger;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -165,25 +166,23 @@ return result;
     }
     public List<Product> displayProducts(String name,String developer,String lowerBound, String upperBound)
     {
-    	float lowerBoundF = 0;
-    	float upperBoundF = 0;
+    	Float lowerBoundF;
+    	Float upperBoundF;
     	List<Product> table = new ArrayList<Product>();
     	String SQL = "CALL display_products(?,?,?,?);";
     	try {
-    		 if(name.equals(""))
-        		 name=null;
-    		 if(developer.equals(""))
-        		 developer=null;
-    		 lowerBoundF = Float.parseFloat(lowerBound);
-    		 upperBoundF = Float.parseFloat(upperBound);
-    		 table = jdbcTemplateObject.query(SQL,new ProductsMapper(),name,developer,lowerBound,upperBound);
-    		
+    		 if(lowerBound.equals("") || upperBound.equals("")) {
+    			 lowerBoundF=null; upperBoundF=null;
+    		 } else {
+    			 lowerBoundF = Float.parseFloat(lowerBound);
+        		 upperBoundF = Float.parseFloat(upperBound);
+    		 }
+    		 table = jdbcTemplateObject.query(SQL,new ProductsMapper(),name,developer,lowerBoundF,upperBoundF);
     	}
     	catch(Exception e)
     	{
     		table.clear();
     		return table;
-    		
     	}
     	return table;
     }
@@ -267,10 +266,12 @@ return result;
     }
     public class Product
     {
-    	int id;
     	String name;
+    	String developer;
+    	Date releaseDate;
+    	String genre;
+    	int PEGI;
     	float price;
-    	int amount;
     }
     private class InvoicesMapper implements RowMapper<Invoice>{
 
@@ -294,10 +295,12 @@ return result;
    	 @Override
    		public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
    			Product product = new Product();
-   			product.id=rs.getInt("id");
-   			product.name=rs.getString("name");
+   			product.name=rs.getString("game_name");
+   			product.developer=rs.getString("developer");
+   			product.releaseDate=rs.getDate("release_date");
+   			product.genre=rs.getString("genre");
+   			product.PEGI=rs.getInt("PEGI");
    			product.price=rs.getFloat("price");
-   			product.amount=rs.getInt("amount");
    			return product;
    		}
 }
