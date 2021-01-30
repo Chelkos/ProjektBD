@@ -156,25 +156,96 @@ return result;
  	}
     	return result;
     }
-    public JFrame displayProducts()
+    public List<String> displayProducts(String name,String developer,String lowerBound, String upperBound)
     {
-    	return window;
+    	float lowerBoundF = 0;
+    	float upperBoundF = 0;
+    	List<String> table = new ArrayList<String>();
+    	String SQL = "CALL display_products(?,?,?,?);";
+    	try {
+    		 if(name.equals(""))
+        		 name=null;
+    		 if(developer.equals(""))
+        		 developer=null;
+    		 lowerBoundF = Float.parseFloat(lowerBound);
+    		 upperBoundF = Float.parseFloat(upperBound);
+    		 table = jdbcTemplateObject.queryForList(SQL,String.class,name,developer,lowerBound,upperBound);
+    		
+    	}
+    	catch(Exception e)
+    	{
+    		table.clear();
+    		table.add("Wrong data");
+    		return table;
+    		
+    	}
+    	return table;
     }
-    public JFrame displayInvoices()
+    public List<String> displayInvoices(String dateOfIssue)
     {
-    	return window;
+    	List<String> table = new ArrayList<String>();
+    	String SQL = "CALL display_invoices(?);";
+    	try {
+    		 table = jdbcTemplateObject.queryForList(SQL,String.class,dateOfIssue);
+    		
+    	}
+    	catch(Exception e)
+    	{
+    		table.clear();
+    		table.add("Wrong data");
+    		return table;
+    		
+    	}
+    	return table;
     }
-    public JFrame createInvoice()
+    public String createInvoice(String customerName,String customerSurname,String NIP,String workerId,String terminalId,String dateOfIssue)
     {
-    	return window;
+    	String SQL = "CALL create_invoice(?,?,?,?,?,?);";
+    	long NIPL = 0;
+    	int workerIdInt = 0;
+    	int terminalIdInt = 0;
+    	try {
+    		NIPL = Long.parseLong(NIP);
+    		workerIdInt = Integer.parseInt(workerId);
+    		terminalIdInt = Integer.parseInt(terminalId);
+    		result = jdbcTemplateObject.queryForObject(SQL,String.class,customerName,customerSurname,NIPL,workerIdInt,terminalIdInt,dateOfIssue);
+    	}
+    	catch(Exception e)
+    	{
+    		return "Wrong data";
+    	}
+    	return result;
     }
-    public JFrame restock()
+    public String restock(String gameName,String gameDeveloper,String amount)
     {
-    	return window;
+    	String SQL = "CALL restock(?,?,?)";
+    	int amountInt =0;
+    	try {
+    		amountInt = Integer.parseInt(amount);
+    		result = jdbcTemplateObject.queryForObject(SQL,String.class,gameName,gameDeveloper,amountInt);
+    		
+    	}
+    	catch(Exception e)
+    	{
+    		
+    		return "Wrong data";
+    	}
+    	return result;
     }
-    public JFrame addClient()
+    public String addClient(String email,String login,String password)
     {
-    	return window;
+    	String SQL = "CALL add_client(?,?,?)";
+    	try {
+    		
+    		result = jdbcTemplateObject.queryForObject(SQL,String.class,email,login,password);
+    	}
+    	catch(Exception e)
+    	{
+    		return "Wrong data";
+    		
+    	}
+    	
+    	return result;
     }
     
 }
