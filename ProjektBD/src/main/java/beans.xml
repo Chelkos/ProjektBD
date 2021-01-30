@@ -7,7 +7,7 @@ xmlns:aop = "http://www.springframework.org/schema/aop" xsi:schemaLocation="http
 	 http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 	 
 	<bean id="dataSource" class="com.mysql.cj.jdbc.MysqlDataSource">
-      <property name="url" value="jdbc:mysql://localhost:3306/gameshop" />
+      <property name="url" value="jdbc:mysql://localhost:3306/gameshop?generateSimpleParameterMetadata=true" />
 	</bean>
 	
 	<bean id="DBConnection" class="DatabaseTransfer.DBConnection">
