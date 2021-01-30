@@ -248,7 +248,7 @@ return result;
     	}
     	catch(Exception e)
     	{
-    		return "Wrong data";
+    		return "Wrong data!";
     		
     	}
     	return result;
