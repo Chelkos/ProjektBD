@@ -1,38 +1,18 @@
 package DatabaseTransfer;
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.Component;
+
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
-import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Scanner;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import javax.sql.DataSource;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.jdbc.core.CallableStatementCreator;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.UserCredentialsDataSourceAdapter;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
@@ -43,7 +23,9 @@ class LoginWindow extends JFrame{
 	JLabel errorMessage;
 	
 	public LoginWindow() {
+		super("Login");
 		setSize(200, 200);
+		setResizable(true);
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		loginField=new JTextField(14);
 		passwordField=new JTextField(14);
@@ -67,9 +49,8 @@ class LoginWindow extends JFrame{
 		add(acceptButton);
 		add(errorMessage);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setLocation(700, 400);
+		setLocation(750, 400);
 		setVisible(true);
-		setResizable(false);
 	}
 	
 	private void setupDataSource(String username, String password)
@@ -85,12 +66,18 @@ class LoginWindow extends JFrame{
 		dataSource=(MysqlDataSource)context.getBean("dataSource");
 		dataSource.setUser(username);
 		dataSource.setPassword(password);
-		JdbcTemplate jdbcTemplateObject=new JdbcTemplate(dataSource);
-		factory=new WindowFactory(connection);
-		mainMenu=factory.create_window(username);
-		mainMenu.setLocation(350, 250);
-		mainMenu.setVisible(true);
-		setVisible(false);
+		try {
+			dataSource.getConnection();
+			factory=new WindowFactory(connection);
+			mainMenu=factory.create_window(username);
+			mainMenu.setLocation(350, 250);
+			mainMenu.setVisible(true);
+			setVisible(false);
+		} catch(SQLException e) {
+			errorMessage.setText("Wrong username or password!");
+		} catch(NullPointerException e) {
+			errorMessage.setText("User not supported!");
+		}
 		/* TODO: in case of authentication error
 		System.out.println(e.getMessage()); 
 		errorMessage.setText("Wrong username!");

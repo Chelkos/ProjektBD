@@ -52,6 +52,7 @@ class MultiLabelWindow extends JFrame {
 		}
     	add(submitButton);
     	add(messageLabel);
+    	setLocation(750, 400-25*labels.length);
     	setVisible(true);
 	}
 	
