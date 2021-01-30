@@ -36,7 +36,7 @@ public class DBConnection {
 	    		}
 	    		catch(Exception E)
 	    		{
-	    			return "Wrong data";
+	    			return "No invoices for this data";
 	    		}
        return result;
     }
@@ -72,7 +72,7 @@ public class DBConnection {
 		}
 return result;
     }
-    public String updateWorker(String PESEL,String identifier, String name, String surname, String position, String wage)
+    public String updateWorker(String identifier, String name, String surname, String PESEL, String position, String wage)
     {
     	long PESELLong =0;
     	int identifierInt=0;
