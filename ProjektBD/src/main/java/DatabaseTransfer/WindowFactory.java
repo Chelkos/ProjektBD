@@ -117,7 +117,7 @@ public class WindowFactory {
 	        	newWindow.setMouseListener(new MouseAdapter(){
 	        		public void mousePressed(MouseEvent e) {
 	        			String[] parameters=newWindow.getParameters();
-	        			String result=connection.displayCash(parameters[0], parameters[1]);
+	        			String result=connection.paySalary(parameters[0], parameters[1]);
 	    	    		newWindow.setMessage(result);
 	        		}
 	        	});
@@ -146,7 +146,7 @@ public class WindowFactory {
 	        	newWindow.setMouseListener(new MouseAdapter(){
 	        		public void mousePressed(MouseEvent e) {
 	        			String[] parameters=newWindow.getParameters();
-	        			String result=connection.addWorker(parameters[0], parameters[1], parameters[2]
+	        			String result=connection.updateWorker(parameters[0], parameters[1], parameters[2]
 	        					, parameters[3], parameters[4], parameters[5]);
 	    	    		newWindow.setMessage(result);
 	        		}

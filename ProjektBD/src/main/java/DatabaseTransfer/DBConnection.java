@@ -80,15 +80,26 @@ return result;
     	String SQL = "CALL update_worker(?,?,?,?,?,?);";
     	try
     	{
-    		PESELLong = Long.parseLong(PESEL);
-			identifierInt = Integer.parseInt(identifier);
-			wageFloat = Float.parseFloat(wage);
+    		identifierInt = Integer.parseInt(identifier);
+    		
+    		if(PESEL.equals("")) {
+    			PESELLong=0;
+    		} else {
+    			PESELLong = Long.parseLong(PESEL);
+    		}
+    		
+    		if(wage.equals("")) {
+    			wageFloat=0.0F;
+    		} else {
+    			wageFloat = Float.parseFloat(wage);
+    		}
+    		
 			result = jdbcTemplateObject.queryForObject(SQL,String.class,identifierInt,name,surname,PESELLong,position,wageFloat);
     		
     	}
     	catch(Exception E)
     	{
-    		return "Wrong data";
+    		return E.getMessage();
     	}
     	return result;
     }
@@ -130,12 +141,14 @@ return result;
     {
      int PEGIInt = 0;
      float priceFloat =0;
-     String SQL = "CALL addProduct(?,?,?,?,?,?);";
+     String SQL = "CALL add_product(?,?,?,?,?,?);";
      try
  	{
- 		PEGIInt = Integer.parseInt(PEGI);
- 		priceFloat = Float.parseFloat(price);
-			result = jdbcTemplateObject.queryForObject(SQL,String.class,name,developer,release_date,genre,PEGIInt,priceFloat);
+    	 if(release_date.equals(""))
+    		 release_date=null;
+ 		 PEGIInt = Integer.parseInt(PEGI);
+ 		 priceFloat = Float.parseFloat(price);
+		 result = jdbcTemplateObject.queryForObject(SQL,String.class,name,developer,release_date,genre,PEGIInt,priceFloat);
  	}
  	catch(Exception E)
  	{
