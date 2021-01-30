@@ -3,6 +3,7 @@ package DatabaseTransfer;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.swing.JTextField;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 public class DBConnection {
+	private String result;
     private DataSource dataSource;
     private JFrame window;
     private JdbcTemplate jdbcTemplateObject;
@@ -23,77 +25,133 @@ public class DBConnection {
           this.dataSource = dataSource;
           this.jdbcTemplateObject = new JdbcTemplate(dataSource);
     }
-    public void display_cash()
+    public String displayCash(String whatCashierId, String whatDate)
     { 
- 
-    	 window = new JFrame("Display cash");
-    	 String SQL = "CALL display_cash(?,?);";
-    	 window.setSize(300,300);
-    	 window.setLayout(new FlowLayout(FlowLayout.LEFT));
-    	 JTextField what_cashier_id = new JTextField(14);
-    	 JTextField what_date = new JTextField(14);
-    	 JButton submit = new JButton("Submit");
-    	 window.add(what_cashier_id);
-    	 window.add(what_date);
-    	 window.add(submit);
-    	 window.setVisible(true);
-    	 System.out.println("In!");
-    	 submit.addMouseListener(new MouseAdapter(){
-	    	public void mousePressed(MouseEvent e) {
-	    		try {
-	    			int what_cashier_id_int;
-	    		 	Float result;
-	    		 	System.out.println(what_cashier_id.getText());
-	    			what_cashier_id_int = Integer.parseInt(what_cashier_id.getText());
-	    			jdbcTemplateObject.update(SQL,what_cashier_id_int, what_date.getText());
-	    			result = jdbcTemplateObject.queryForObject(SQL,float.class);
-	    			JLabel result_label = new JLabel(result.toString());
-	    			window.add(result_label);
-	    			
-	    			
+    	 String SQL = "SELECT display_cash(?,?);";
+    	
+	    			int whatCashierIdInt;
+	    			try {
+	    			whatCashierIdInt = Integer.parseInt( whatCashierId);
+	    			 result = jdbcTemplateObject.queryForObject(SQL,String.class,whatCashierIdInt, whatDate);
 	    		}
 	    		catch(Exception E)
 	    		{
-	    			E.getMessage();
+	    			return "Wrong data";
 	    		}
-	 
-	    	}
-	    });
-    	
+       return result;
     }
-    public JFrame pay_salary()
+    public String paySalary(String amountString,String position)
+    {
+    	String SQL = "CALL pay_salary(?,?);";
+	    		try {
+	    			Float amount;
+	    			amount = Float.parseFloat(amountString);
+	    			result = jdbcTemplateObject.queryForObject(SQL,String.class,amount, position);
+	    		}
+	    		catch(Exception E)
+	    		{
+	    			return "Wrong data";
+	    		}
+    	return result;
+    }
+    public String addWorker(String identifier,String name,String surname,String PESEL,String position,String wage)
+    {
+    	String SQL = "CALL add_worker(?,?,?,?,?,?);";
+		try {
+			int identifierInt = 0;
+			long PESELLong = 0;
+			float wageFloat = 0;
+			PESELLong = Long.parseLong(PESEL);
+			identifierInt = Integer.parseInt(identifier);
+			wageFloat = Float.parseFloat(wage);
+			result = jdbcTemplateObject.queryForObject(SQL,String.class,identifierInt,name,surname,PESELLong,position,wageFloat);
+		}
+		catch(Exception E)
+		{
+			return "Wrong data";
+		}
+return result;
+    }
+    public String updateWorker(String PESEL,String identifier, String name, String surname, String position, String wage)
+    {
+    	long PESELLong =0;
+    	int identifierInt=0;
+    	float wageFloat =0;
+    	String SQL = "CALL update_worker(?,?,?,?,?,?);";
+    	try
+    	{
+    		PESELLong = Long.parseLong(PESEL);
+			identifierInt = Integer.parseInt(identifier);
+			wageFloat = Float.parseFloat(wage);
+			result = jdbcTemplateObject.queryForObject(SQL,String.class,PESELLong,identifierInt,name,surname,PESELLong,position,wageFloat);
+    		
+    	}
+    	catch(Exception E)
+    	{
+    		return "Wrong data";
+    	}
+    	return result;
+    }
+    public String removeWorker(String identifier)
+    {
+    	int identifierInt=0;
+    	String SQL = "CALL remove_worker(?);";
+    	try
+    	{
+    		identifierInt = Integer.parseInt(identifier);
+			result = jdbcTemplateObject.queryForObject(SQL,String.class,identifierInt);
+    	}
+    	catch(Exception E)
+    	{
+    		return "Wrong data";
+    	}
+    	return result;
+    }
+    public String addToInvoice(String invoice_id,String product_id, String product_amount)
+    {
+    	int invoiceIdInt =0;
+    	int productIdInt =0;
+    	int productAmountInt =0;
+    	String SQL = "CALL add_to_invoice(?,?,?);";
+    	try
+    	{
+    		invoiceIdInt = Integer.parseInt(invoice_id);
+    		productIdInt = Integer.parseInt(product_id);
+    		productAmountInt = Integer.parseInt(product_amount);
+			result = jdbcTemplateObject.queryForObject(SQL,String.class,invoiceIdInt,productIdInt, productAmountInt);
+    	}
+    	catch(Exception E)
+    	{
+    		return "Wrong data";
+    	}
+    	return result;
+    }
+    public String addProduct(String name,String developer, String release_date, String genre,String PEGI,String price)
+    {
+     int PEGIInt = 0;
+     float priceFloat =0;
+     String SQL = "CALL addProduct(?,?,?,?,?,?);";
+     try
+ 	{
+ 		PEGIInt = Integer.parseInt(PEGI);
+ 		priceFloat = Float.parseFloat(price);
+			result = jdbcTemplateObject.queryForObject(SQL,String.class,name,developer,release_date,genre,PEGIInt,priceFloat);
+ 	}
+ 	catch(Exception E)
+ 	{
+ 		return "Wrong data";
+ 	}
+    	return result;
+    }
+    public JFrame displayProducts()
     {
     	return window;
     }
-    public JFrame add_worker()
+    public JFrame displayInvoices()
     {
     	return window;
     }
-    public JFrame update_worker()
-    {
-    	return window;
-    }
-    public JFrame remove_worker()
-    {
-    	return window;
-    }
-    public JFrame add_to_invoice()
-    {
-    	return window;
-    }
-    public JFrame add_product()
-    {
-    	return window;
-    }
-    public JFrame display_products()
-    {
-    	return window;
-    }
-    public JFrame display_invoices()
-    {
-    	return window;
-    }
-    public JFrame create_invoice()
+    public JFrame createInvoice()
     {
     	return window;
     }
@@ -101,7 +159,7 @@ public class DBConnection {
     {
     	return window;
     }
-    public JFrame add_client()
+    public JFrame addClient()
     {
     	return window;
     }
