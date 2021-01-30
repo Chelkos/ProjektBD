@@ -29,15 +29,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class WindowFactory {
 	private JFrame window;
+	private JFrame database_window;
 	private Map<String,JButton> buttons;
 	WindowFactory()
 	{
 
 	}
-	public JFrame create_window(String user,DataSource dataSource)
+	public JFrame create_window(String user,DBConnection connection)
 	{
-	
 		int x=150,y=75;
+		database_window = new JFrame();
 		window = new JFrame();
 		window.setSize(1000,500);
 		window.setLayout(new GridLayout(3,4));
@@ -59,67 +60,67 @@ public class WindowFactory {
 
 		buttons.get("display_cash").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		
+	    	 connection.display_cash();
 	    		
 	    	}
 	    });
 		buttons.get("pay_salary").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		
+	    		 connection.pay_salary();
 	    		
 	    	}
 	    });
 		buttons.get("add_worker").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		
+	    		 connection.add_worker();
 	    		
 	    	}
 	    });
 		buttons.get("update_worker").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		
+	    		connection.update_worker();
 	    		
 	    	}
 	    });
 		buttons.get("remove_worker").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		
+	    		 connection.remove_worker();
 	    		
 	    	}
 	    });
 		buttons.get("add_to_invoice").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		
+	    		 connection.add_to_invoice();
 	    		
 	    	}
 	    });
 		buttons.get("display_products").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		
+	    		connection.display_products();
 	    		
 	    	}
 	    });
 		buttons.get("create_invoice").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		
+	    	connection.create_invoice();
 	    		
 	    	}
 	    });
 		buttons.get("restock").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		
+	    		 connection.restock();
 	    		
 	    	}
 	    });
 		buttons.get("add_client").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		
+	    	connection.add_client();
 	    		
 	    	}
 	    });
 		buttons.get("add_product").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		
+	    		connection.add_product();
 	    		
 	    	}
 	    });
@@ -141,27 +142,47 @@ public class WindowFactory {
 			window.add(buttons.get("add_client"));
 
 		}
-		if(user=="Boss")
+		if(user.equals("Boss"))
 		{
-			
-			
+			window.add(buttons.get("display_cash"));
+			window.add(buttons.get("add_worker"));
+			window.add(buttons.get("update_worker"));
+			window.add(buttons.get("remove_worker"));
+			window.add(buttons.get("display_invoices"));
 		}
-		if(user=="Manager")
+		if(user.equals("Manager"))
 		{
-			
-			
+			window.add(buttons.get("display_cash"));
+			window.add(buttons.get("add_worker"));
+			window.add(buttons.get("update_worker"));
+			window.add(buttons.get("remove_worker"));
+			window.add(buttons.get("display_invoices"));
+			window.add(buttons.get("add_to_invoice"));
+			window.add(buttons.get("add_product"));
+			window.add(buttons.get("display_products"));
+			window.add(buttons.get("display_invoices"));
+			window.add(buttons.get("create_invoice"));
+			window.add(buttons.get("restock"));
 		}
-		if(user=="Accountant")
+		if(user.equals("Accountant"))
 		{
-			
+			window.add(buttons.get("pay_salary"));
+			window.add(buttons.get("display_invoices"));
+			window.add(buttons.get("display_cash"));
 		}
-		if(user=="ShopAssistant")
+		if(user.equals("ShopAssistant"))
 		{
-			
+			window.add(buttons.get("add_to_invoice"));
+			window.add(buttons.get("add_product"));
+			window.add(buttons.get("display_products"));
+			window.add(buttons.get("display_invoices"));
+			window.add(buttons.get("create_invoice"));
+			window.add(buttons.get("restock"));
 		}
-		if(user=="Client")
+		if(user.equals("Client"))
 		{
-			
+			window.add(buttons.get("add_client"));
+			window.add(buttons.get("display_products"));
 		}
 		return window;
 	}

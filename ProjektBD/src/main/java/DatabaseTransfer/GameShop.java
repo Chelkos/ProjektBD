@@ -71,9 +71,10 @@ public class GameShop {
 		try
 		{
 		dataSource.getConnection(username, password);
+		connection.setDataSource(dataSource);
 		window.setVisible(false);
 		factory = new WindowFactory();
-		windowl = factory.create_window(username, dataSource);
+		windowl = factory.create_window(username,connection);
 		windowl.setVisible(true);
 		}
 		catch(Exception e)
