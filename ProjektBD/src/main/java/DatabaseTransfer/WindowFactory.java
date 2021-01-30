@@ -10,6 +10,7 @@ import java.awt.Button;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.io.PrintWriter;
@@ -60,8 +61,12 @@ class MultiLabelWindow extends JFrame {
 	}
 	
 	public void setMessage(String message) {
-		this.messageLabel.setText(message);
+		messageLabel.setText(message);
 		revalidate();
+	}
+	
+	public void appendMessage(String message) {
+		messageLabel.setText(messageLabel.getText() + message);
 	}
 	
 	public void setMouseListener(MouseAdapter mouseAdapter) {
@@ -199,36 +204,79 @@ public class WindowFactory {
 		
 		buttons.get("display_products").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		//connection.display_products();
-	    		
+	    		String[] labels= new String[]{"Name: ", "Developer: ", "Release date: ", "Genre: ", "PEGI: ", "Price: "};
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Add product", labels);
+	        	newWindow.setMouseListener(new MouseAdapter(){
+	        		public void mousePressed(MouseEvent e) {
+	        			String[] parameters=newWindow.getParameters();
+	        			List<String> result=connection.displayProducts(parameters[0], parameters[1], parameters[2]
+	        					, parameters[3]);
+	    	    		//newWindow.setMessage(result);
+	        			for(String s : result) {
+	        				System.out.println(s);
+	        			}
+	        		}
+	        	});
 	    	}
 	    });
 		
 		buttons.get("display_invoices").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		//connection.display_products();
-	    		
+	    		String[] labels=new String[]{"Date: "};
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Display invoices", labels);
+	    		newWindow.setMouseListener(new MouseAdapter(){
+	        		public void mousePressed(MouseEvent e) {
+	        			String[] parameters=newWindow.getParameters();
+	        			List<String> result=connection.displayInvoices(parameters[0]);
+	        			for(String s : result) {
+	        				//newWindow.appendMessage(s);
+	        				System.out.println(s);
+	        			}
+	        		}
+	        	});
 	    	}
 	    });
 		
 		buttons.get("create_invoice").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    	//connection.create_invoice();
-	    		
+	    		String[] labels= new String[]{"Customer name: ", "Customer surname: ", "NIP: ", "Worker ID: ", "Terminal ID: ", "Date of issue: "};
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Create invoice", labels);
+	        	newWindow.setMouseListener(new MouseAdapter(){
+	        		public void mousePressed(MouseEvent e) {
+	        			String[] parameters=newWindow.getParameters();
+	        			String result=connection.createInvoice(parameters[0], parameters[1], parameters[2]
+	        					, parameters[3], parameters[4], parameters[5]);
+	    	    		newWindow.setMessage(result);
+	        		}
+	        	});
 	    	}
 	    });
 		
 		buttons.get("restock").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		 connection.restock();
-	    		
+	    		String[] labels=new String[]{"Game title: ", "Developer: ", "Amount: "};
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Restock", labels);
+	    		newWindow.setMouseListener(new MouseAdapter(){
+		        	public void mousePressed(MouseEvent e) {
+		        		String[] parameters=newWindow.getParameters();
+		        		String result=connection.restock(parameters[0], parameters[1], parameters[2]);
+		    	    	newWindow.setMessage(result);
+		        	}
+		        });
 	    	}
 	    });
 		
 		buttons.get("add_client").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    	//connection.add_client();
-	    		
+	    		String[] labels=new String[]{"Email: ", "Login: ", "Password: "};
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Add client", labels);
+	    		newWindow.setMouseListener(new MouseAdapter(){
+		        	public void mousePressed(MouseEvent e) {
+		        		String[] parameters=newWindow.getParameters();
+		        		String result=connection.addClient(parameters[0], parameters[1], parameters[2]);
+		    	    	newWindow.setMessage(result);
+		        	}
+		        });
 	    	}
 	    });
 		
