@@ -254,6 +254,45 @@ return result;
     	}
     	return result;
     }
+    public String databaseBackup(String savePath)
+    {
+    	String executeCmd = "mysqldump -u Admin -p Adminpass --database gameshop -r " + savePath;
+    	 try {
+    		 
+    		 Process runtimeProcess = Runtime.getRuntime().exec(executeCmd);
+    	        int processComplete = runtimeProcess.waitFor();
+    	        if (processComplete == 0) {
+    	            return "Backup Complete";
+    	        } else {
+    	           return "Backup Failure";
+    	        }
+    	 }
+    	 catch(Exception e)
+    	 {
+    		 e.getMessage();
+    	 }
+    	return result;
+    	
+    }
+    public String databaseRestore(String restorePath)
+    {
+    	 String[] executeCmd = new String[]{"mysql gameshop -u Admin -p Adminpass -e", " source " + restorePath};
+    	try {
+    		 Process runtimeProcess = Runtime.getRuntime().exec(executeCmd);
+             int processComplete = runtimeProcess.waitFor();
+             if (processComplete == 0) {
+                return "Success";
+             } else {
+                return "Failure";
+             }
+    		
+    	}
+    	catch(Exception e)
+    	{
+    		e.getMessage();
+    	}
+    	return result;
+    }
     public class Invoice
     {
     	int id;
