@@ -1,5 +1,6 @@
 package DatabaseTransfer;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,6 +18,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+
 
 
 public class DBConnection {
@@ -160,11 +163,11 @@ return result;
  	}
     	return result;
     }
-    public List<String> displayProducts(String name,String developer,String lowerBound, String upperBound)
+    public List<Product> displayProducts(String name,String developer,String lowerBound, String upperBound)
     {
     	float lowerBoundF = 0;
     	float upperBoundF = 0;
-    	List<String> table = new ArrayList<String>();
+    	List<Product> table = new ArrayList<Product>();
     	String SQL = "CALL display_products(?,?,?,?);";
     	try {
     		 if(name.equals(""))
@@ -173,35 +176,33 @@ return result;
         		 developer=null;
     		 lowerBoundF = Float.parseFloat(lowerBound);
     		 upperBoundF = Float.parseFloat(upperBound);
-    		 table = jdbcTemplateObject.queryForList(SQL,String.class,name,developer,lowerBound,upperBound);
+    		 table = jdbcTemplateObject.query(SQL,new ProductsMapper(),name,developer,lowerBound,upperBound);
     		
     	}
     	catch(Exception e)
     	{
     		table.clear();
-    		table.add("Wrong data");
     		return table;
     		
     	}
     	return table;
     }
-    public List<String> displayInvoices(String dateOfIssue)
+    public List<Invoice> displayInvoices(String dateOfIssue)
     {
-    	List<String> table = new ArrayList<String>();
+    	List<Invoice> table = new ArrayList<Invoice>();
     	String SQL = "CALL display_invoices(?);";
-    
+    	 ResultSet rs;
     	try {
-    		ResultSet rs = jdbcTemplateObject.execute(SQL);
-    		// table = jdbcTemplateObject.queryForList(SQL,String.class,dateOfIssue);
-    		
+    		table = jdbcTemplateObject.query(SQL,new InvoicesMapper(),dateOfIssue);
     	}
     	catch(Exception e)
     	{
     		table.clear();
-    		table.add("Wrong data");
     		return table;
     		
     	}
+    	
+    	
     	return table;
     }
     public String createInvoice(String customerName,String customerSurname,String NIP,String workerId,String terminalId,String dateOfIssue)
@@ -250,8 +251,55 @@ return result;
     		return "Wrong data";
     		
     	}
-    	
     	return result;
     }
+    public class Invoice
+    {
+    	int id;
+    	String customerName;
+    	String customerSurname;
+    	long NIP;
+    	int workerId;
+    	int terminalId;
+    	String dateOfIssue;
+    	float netto;
+    	float tax;
+    }
+    public class Product
+    {
+    	int id;
+    	String name;
+    	float price;
+    	int amount;
+    }
+    private class InvoicesMapper implements RowMapper<Invoice>{
+
+    	 @Override
+    		public Invoice mapRow(ResultSet rs, int rowNum) throws SQLException {
+    			Invoice invoice = new Invoice();
+    			invoice.id=rs.getInt("id");
+    			invoice.customerName=rs.getString("customer_name");
+    			invoice.customerSurname=rs.getString("customer_surname");
+    			invoice.NIP=rs.getLong("NIP");
+    			invoice.workerId=rs.getInt("worker_id");
+    			invoice.terminalId=rs.getInt("terminal_id");
+    			invoice.dateOfIssue=rs.getString("date_of_issue");
+    			invoice.netto=rs.getFloat("netto");
+    			invoice.tax=rs.getFloat("tax");
+    			return invoice;
+    		}
+}
+    private class ProductsMapper implements RowMapper<Product>{
+
+   	 @Override
+   		public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
+   			Product product = new Product();
+   			product.id=rs.getInt("id");
+   			product.name=rs.getString("name");
+   			product.price=rs.getFloat("price");
+   			product.amount=rs.getInt("amount");
+   			return product;
+   		}
+}
     
 }
