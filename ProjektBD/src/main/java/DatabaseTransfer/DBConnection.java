@@ -21,14 +21,16 @@ import javax.swing.JTextField;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
+
 
 
 public class DBConnection {
 	private String result;
-    private DataSource dataSource;
+    private MysqlDataSource dataSource;
     private JFrame window;
     private JdbcTemplate jdbcTemplateObject;
-    public void setDataSource(DataSource dataSource){
+    public void setDataSource(MysqlDataSource dataSource){
     	  window = new JFrame();
           this.dataSource = dataSource;
           this.jdbcTemplateObject = new JdbcTemplate(dataSource);

@@ -69,10 +69,6 @@ class MultiLabelWindow extends JFrame {
 		revalidate();
 	}
 	
-	public void appendMessage(String message) {
-		messageLabel.setText(messageLabel.getText() + message);
-	}
-	
 	public void setMouseListener(MouseAdapter mouseAdapter) {
 		this.submitButton.addMouseListener(mouseAdapter);
 	}

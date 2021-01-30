@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import org.springframework.context.ApplicationContext;
@@ -18,7 +19,7 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 
 class LoginWindow extends JFrame{
 	JTextField loginField;
-	JTextField passwordField;
+	JPasswordField passwordField;
 	JButton acceptButton;
 	JLabel errorMessage;
 	
@@ -28,11 +29,12 @@ class LoginWindow extends JFrame{
 		setResizable(true);
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		loginField=new JTextField(14);
-		passwordField=new JTextField(14);
+		passwordField=new JPasswordField(14);
 		acceptButton=new JButton("Login");
 		errorMessage=new JLabel();
 		loginField.setSize(200, 70);
 		passwordField.setSize(200,50);
+		passwordField.setEchoChar('*');
 		add(new JLabel("Login: "));
 		add(loginField);
 		add(new JLabel("Password: "));
@@ -41,7 +43,7 @@ class LoginWindow extends JFrame{
 		acceptButton.addMouseListener(new MouseAdapter(){
       	public void mousePressed(MouseEvent e) {
       		if(!loginField.getText().equals("Client"))
-      		setupDataSource(loginField.getText(),passwordField.getText());
+      		setupDataSource(loginField.getText(), new String(passwordField.getPassword()));
       		else
       			setupDataSource(loginField.getText(),null);
       	}
@@ -78,10 +80,6 @@ class LoginWindow extends JFrame{
 		} catch(NullPointerException e) {
 			errorMessage.setText("User not supported!");
 		}
-		/* TODO: in case of authentication error
-		System.out.println(e.getMessage()); 
-		errorMessage.setText("Wrong username!");
-		revalidate();*/
 	}
 	
 }
