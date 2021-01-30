@@ -83,7 +83,7 @@ return result;
     		PESELLong = Long.parseLong(PESEL);
 			identifierInt = Integer.parseInt(identifier);
 			wageFloat = Float.parseFloat(wage);
-			result = jdbcTemplateObject.queryForObject(SQL,String.class,PESELLong,identifierInt,name,surname,PESELLong,position,wageFloat);
+			result = jdbcTemplateObject.queryForObject(SQL,String.class,identifierInt,name,surname,PESELLong,position,wageFloat);
     		
     	}
     	catch(Exception E)

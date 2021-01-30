@@ -123,6 +123,7 @@ public class WindowFactory {
 	        	});
 	    	}
 	    });
+		
 		buttons.get("add_worker").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
 	    		String[] labels= new String[]{"Identifier: ", "Name: ", "Surname: ", "PESEL: ", "Position: ", "Wage: "};
@@ -135,15 +136,24 @@ public class WindowFactory {
 	    	    		newWindow.setMessage(result);
 	        		}
 	        	});
-	    		
 	    	}
 	    });
+		
 		buttons.get("update_worker").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		//connection.update_worker();
-	    		
+	    		String[] labels= new String[]{"Identifier: ", "Name: ", "Surname: ", "PESEL: ", "Position: ", "Wage: "};
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Update worker", labels);
+	        	newWindow.setMouseListener(new MouseAdapter(){
+	        		public void mousePressed(MouseEvent e) {
+	        			String[] parameters=newWindow.getParameters();
+	        			String result=connection.addWorker(parameters[0], parameters[1], parameters[2]
+	        					, parameters[3], parameters[4], parameters[5]);
+	    	    		newWindow.setMessage(result);
+	        		}
+	        	});
 	    	}
 	    });
+		
 		buttons.get("remove_worker").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
 	    		String[] labels=new String[]{"Identifier: "};
@@ -155,52 +165,73 @@ public class WindowFactory {
 	    	    		newWindow.setMessage(result);
 	        		}
 	        	});
-	    		
 	    	}
 	    });
+		
 		buttons.get("add_to_invoice").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		 String[] labels=new String[]{"Invoice ID: ", "Product ID: ", "Product amount: "};
-	    		 MultiLabelWindow newWindow=new MultiLabelWindow("Add to invoice", labels);
-	    		 newWindow.setMouseListener(new MouseAdapter(){
-		        		public void mousePressed(MouseEvent e) {
-		        			String[] parameters=newWindow.getParameters();
-		        			String result=connection.addToInvoice(parameters[0], parameters[1], parameters[2]);
-		    	    		newWindow.setMessage(result);
-		        		}
-		        	});
+	    		String[] labels=new String[]{"Invoice ID: ", "Product ID: ", "Product amount: "};
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Add to invoice", labels);
+	    		newWindow.setMouseListener(new MouseAdapter(){
+		        	public void mousePressed(MouseEvent e) {
+		        		String[] parameters=newWindow.getParameters();
+		        		String result=connection.addToInvoice(parameters[0], parameters[1], parameters[2]);
+		    	    	newWindow.setMessage(result);
+		        	}
+		        });
 	    	}
 	    });
+		
+		buttons.get("add_product").addMouseListener(new MouseAdapter(){
+	    	public void mousePressed(MouseEvent e) {
+	    		String[] labels= new String[]{"Name: ", "Developer: ", "Release date: ", "Genre: ", "PEGI: ", "Price: "};
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Add product", labels);
+	        	newWindow.setMouseListener(new MouseAdapter(){
+	        		public void mousePressed(MouseEvent e) {
+	        			String[] parameters=newWindow.getParameters();
+	        			String result=connection.addProduct(parameters[0], parameters[1], parameters[2]
+	        					, parameters[3], parameters[4], parameters[5]);
+	    	    		newWindow.setMessage(result);
+	        		}
+	        	});
+	    	}
+	    });
+		
 		buttons.get("display_products").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
 	    		//connection.display_products();
 	    		
 	    	}
 	    });
+		
+		buttons.get("display_invoices").addMouseListener(new MouseAdapter(){
+	    	public void mousePressed(MouseEvent e) {
+	    		//connection.display_products();
+	    		
+	    	}
+	    });
+		
 		buttons.get("create_invoice").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
 	    	//connection.create_invoice();
 	    		
 	    	}
 	    });
+		
 		buttons.get("restock").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
 	    		 connection.restock();
 	    		
 	    	}
 	    });
+		
 		buttons.get("add_client").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
 	    	//connection.add_client();
 	    		
 	    	}
 	    });
-		buttons.get("add_product").addMouseListener(new MouseAdapter(){
-	    	public void mousePressed(MouseEvent e) {
-	    		//connection.add_product();
-	    		
-	    	}
-	    });
+		
 	}
 	public JFrame create_window(String user)
 	{
