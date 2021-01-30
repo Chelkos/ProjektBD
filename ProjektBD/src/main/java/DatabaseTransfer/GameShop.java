@@ -36,43 +36,45 @@ import org.springframework.jdbc.datasource.UserCredentialsDataSourceAdapter;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
-
-public class GameShop {
-	public static JFrame  window;
-	private static void setupWindow()
-	{
-		 
-		  window = new JFrame();
-		  window.setSize(200, 180);
-		  window.setLayout(new FlowLayout(FlowLayout.LEFT));
-		  JTextField loginField=new JTextField(14);
-		  JTextField passwordField=new JTextField(14);
-		  Button accept = new Button("Login");
-		  loginField.setSize(200, 70);
-		  passwordField.setSize(200,50);
-		  window.add(new JLabel("Login: "));
-  		  window.add(loginField);
-  		  window.add(new JLabel("Password: "));
-		  window.add(passwordField);
-		  accept.setSize(50,150);
-		  accept.addMouseListener(new MouseAdapter(){
-        	public void mousePressed(MouseEvent e) {
-        		if(loginField.getText()!="Client")
-        		setupDataSource(loginField.getText(),passwordField.getText());
-        		else
-        			setupDataSource(loginField.getText(),null);
-        	}
-        });
-		  window.add(accept);
-		  
-  		  window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-  		  window.setLocation(700, 400);
-  		  window.setVisible(true);
-		  window.setResizable(false);
+class LoginWindow extends JFrame{
+	JTextField loginField;
+	JTextField passwordField;
+	JButton acceptButton;
+	JLabel errorMessage;
+	
+	public LoginWindow() {
+		setSize(200, 250);
+		setLayout(new FlowLayout(FlowLayout.LEFT));
+		loginField=new JTextField(14);
+		passwordField=new JTextField(14);
+		acceptButton=new JButton("Login");
+		errorMessage=new JLabel();
+		loginField.setSize(200, 70);
+		passwordField.setSize(200,50);
+		add(new JLabel("Login: "));
+		add(loginField);
+		add(new JLabel("Password: "));
+		add(passwordField);
+		acceptButton.setSize(50,150);
+		acceptButton.addMouseListener(new MouseAdapter(){
+      	public void mousePressed(MouseEvent e) {
+      		if(!loginField.getText().equals("Client"))
+      		setupDataSource(loginField.getText(),passwordField.getText());
+      		else
+      			setupDataSource(loginField.getText(),null);
+      	}
+      });
+		add(acceptButton);
+		add(errorMessage);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setLocation(700, 400);
+		setVisible(true);
+		setResizable(false);
 	}
-	private static void setupDataSource(String username,String password)
+	
+	private void setupDataSource(String username, String password)
 	{
-		JFrame windowl;
+		JFrame mainMenu;
 		WindowFactory factory;
 		MysqlDataSource dataSource;
 		ApplicationContext context;
@@ -84,14 +86,23 @@ public class GameShop {
 		dataSource.setUser(username);
 		dataSource.setPassword(password);
 		JdbcTemplate jdbcTemplateObject=new JdbcTemplate(dataSource);
-		window.setVisible(false);
-		factory = new WindowFactory();
-		windowl = factory.create_window(username,connection);
-		windowl.setVisible(true);
+		factory=new WindowFactory();
+		mainMenu=factory.create_window(username,connection);
+		mainMenu.setLocation(350, 250);
+		mainMenu.setVisible(true);
+		setVisible(false);
+		/* TODO: in case of authentication error
+		System.out.println(e.getMessage()); 
+		errorMessage.setText("Wrong username!");
+		revalidate();*/
 	}
-	public static void main(String[] args) {
-		setupWindow();
+	
+}
 
+public class GameShop {
+
+	public static void main(String[] args) {
+		new LoginWindow();
 	}
 
 }
