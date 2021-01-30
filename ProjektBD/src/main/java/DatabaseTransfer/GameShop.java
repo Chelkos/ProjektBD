@@ -43,7 +43,7 @@ class LoginWindow extends JFrame{
 	JLabel errorMessage;
 	
 	public LoginWindow() {
-		setSize(200, 250);
+		setSize(200, 200);
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		loginField=new JTextField(14);
 		passwordField=new JTextField(14);
@@ -86,8 +86,8 @@ class LoginWindow extends JFrame{
 		dataSource.setUser(username);
 		dataSource.setPassword(password);
 		JdbcTemplate jdbcTemplateObject=new JdbcTemplate(dataSource);
-		factory=new WindowFactory();
-		mainMenu=factory.create_window(username,connection);
+		factory=new WindowFactory(connection);
+		mainMenu=factory.create_window(username);
 		mainMenu.setLocation(350, 250);
 		mainMenu.setVisible(true);
 		setVisible(false);

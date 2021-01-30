@@ -28,14 +28,52 @@ import javax.swing.JTextField;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+class MultiLabelWindow extends JFrame {
+	private JTextField[] textFields;
+	private JLabel messageLabel;
+	private JButton submitButton;
+	
+	public MultiLabelWindow(String title, String labels[]) {
+		super(title);
+		setSize(200, 100+50*labels.length);
+		setResizable(true);
+    	setLayout(new FlowLayout(FlowLayout.LEFT));
+    	textFields=new JTextField[labels.length];
+		messageLabel=new JLabel();
+		submitButton=new JButton("Submit");
+		for(int i=0; i<labels.length; i++) {
+			add(new JLabel(labels[i]));
+			textFields[i]=new JTextField(14);
+			add(textFields[i]);
+		}
+    	add(submitButton);
+    	add(messageLabel);
+    	setVisible(true);
+	}
+	
+	public String[] getParameters() {
+		String[] parameters= new String[textFields.length];
+		for(int i=0; i<textFields.length; i++) {
+			parameters[i]=textFields[i].getText();
+		}
+		return parameters;
+	}
+	
+	public void setMessage(String message) {
+		this.messageLabel.setText(message);
+		revalidate();
+	}
+	
+	public void setMouseListener(MouseAdapter mouseAdapter) {
+		this.submitButton.addMouseListener(mouseAdapter);
+	}
+	
+}
+
 public class WindowFactory {
 	private JFrame window;
 	private Map<String,JButton> buttons;
-	WindowFactory()
-	{
-
-	}
-	public JFrame create_window(String user,DBConnection connection)
+	WindowFactory(DBConnection connection)
 	{
 		int x=150,y=75;
 		window=new JFrame();
@@ -57,21 +95,13 @@ public class WindowFactory {
 		
 		buttons.get("display_cash").addMouseListener(new MouseAdapter() {
 	    	public void mousePressed(MouseEvent e) {
-	    		JFrame newWindow=new JFrame("Display cash");
-	        	newWindow.setSize(300,300);
-	        	newWindow.setLayout(new FlowLayout(FlowLayout.LEFT));
-	        	JTextField terminalIDField=new JTextField(14);
-	        	JTextField dateField=new JTextField(14);
-	        	JButton submitButton=new JButton("Submit");
-	        	newWindow.add(terminalIDField);
-	        	newWindow.add(dateField);
-	        	newWindow.add(submitButton);
-	        	newWindow.setVisible(true);
-	        	submitButton.addMouseListener(new MouseAdapter(){
+	    		String[] labels= new String[]{"Terminal ID: ", "Date: "};
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Display cash", labels);
+	        	newWindow.setMouseListener(new MouseAdapter(){
 	        		public void mousePressed(MouseEvent e) {
-	        			String result=connection.displayCash(terminalIDField.getText(), dateField.getText());
-	    	    		window.add(new JLabel(result));
-	    	    		window.revalidate();
+	        			String[] parameters=newWindow.getParameters();
+	        			String result=connection.displayCash(parameters[0], parameters[1]);
+	    	    		newWindow.setMessage("Total cash: " + result);
 	        		}
 	        	});
 	    	}
@@ -97,7 +127,15 @@ public class WindowFactory {
 	    });
 		buttons.get("remove_worker").addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		// connection.remove_worker();
+	    		String[] labels=new String[]{"Identifier: "};
+	    		MultiLabelWindow newWindow=new MultiLabelWindow("Remove worker", labels);
+	    		newWindow.setMouseListener(new MouseAdapter(){
+	        		public void mousePressed(MouseEvent e) {
+	        			String[] parameters=newWindow.getParameters();
+	        			String result=connection.removeWorker(parameters[0]);
+	    	    		newWindow.setMessage(result);
+	        		}
+	        	});
 	    		
 	    	}
 	    });
@@ -137,8 +175,9 @@ public class WindowFactory {
 	    		
 	    	}
 	    });
-		
-		
+	}
+	public JFrame create_window(String user)
+	{
 		if(user.equals("Admin")) {
 			window.add(buttons.get("display_cash"));
 			window.add(buttons.get("pay_salary"));
@@ -152,7 +191,6 @@ public class WindowFactory {
 			window.add(buttons.get("create_invoice"));
 			window.add(buttons.get("restock"));
 			window.add(buttons.get("add_client"));
-
 		} else if(user.equals("Boss")) {
 			window.add(buttons.get("display_cash"));
 			window.add(buttons.get("add_worker"));
@@ -190,5 +228,4 @@ public class WindowFactory {
 		}
 		return window;
 	}
-	
 }
