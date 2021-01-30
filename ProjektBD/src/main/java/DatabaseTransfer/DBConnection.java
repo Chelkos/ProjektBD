@@ -3,6 +3,7 @@ package DatabaseTransfer;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +26,9 @@ public class DBConnection {
     public void display_cash()
     { 
  
-    	window = new JFrame("Display cash");
+    	 window = new JFrame("Display cash");
     	 String SQL = "CALL display_cash(?,?);";
-    	window.setSize(300,300);
+    	 window.setSize(300,300);
     	 window.setLayout(new FlowLayout(FlowLayout.LEFT));
     	 JTextField what_cashier_id = new JTextField(14);
     	 JTextField what_date = new JTextField(14);
@@ -39,22 +40,22 @@ public class DBConnection {
     	 System.out.println("In!");
     	 submit.addMouseListener(new MouseAdapter(){
 	    	public void mousePressed(MouseEvent e) {
-	    		//try {
+	    		try {
 	    			int what_cashier_id_int;
 	    		 	Float result;
 	    		 	System.out.println(what_cashier_id.getText());
 	    			what_cashier_id_int = Integer.parseInt(what_cashier_id.getText());
-	    			jdbcTemplateObject.update(SQL,what_cashier_id_int, what_date);
+	    			jdbcTemplateObject.update(SQL,what_cashier_id_int, what_date.getText());
 	    			result = jdbcTemplateObject.queryForObject(SQL,float.class);
 	    			JLabel result_label = new JLabel(result.toString());
 	    			window.add(result_label);
 	    			
 	    			
-	    	//	}
-	    		/*catch(Exception e2)
+	    		}
+	    		catch(Exception E)
 	    		{
-	    			System.out.println("Wrong id!");
-	    		}*/
+	    			E.getMessage();
+	    		}
 	 
 	    	}
 	    });

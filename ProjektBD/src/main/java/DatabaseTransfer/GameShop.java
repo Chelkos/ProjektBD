@@ -12,6 +12,10 @@ import java.awt.event.MouseEvent;
 import java.util.Scanner;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import javax.sql.DataSource;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -25,9 +29,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.core.CallableStatementCreator;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.UserCredentialsDataSourceAdapter;
+
+import com.mysql.cj.jdbc.MysqlDataSource;
+
 
 public class GameShop {
-	static JFrame  window;
+	public static JFrame  window;
 	private static void setupWindow()
 	{
 		 
@@ -55,6 +66,7 @@ public class GameShop {
 		  window.add(accept);
 		  
   		  window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+  		  window.setLocation(700, 400);
   		  window.setVisible(true);
 		  window.setResizable(false);
 	}
@@ -62,28 +74,20 @@ public class GameShop {
 	{
 		JFrame windowl;
 		WindowFactory factory;
-		DataSource dataSource;
+		MysqlDataSource dataSource;
 		ApplicationContext context;
 		DBConnection connection;
+		
 		context=new ClassPathXmlApplicationContext("file:src/main/java/beans.xml");
 		connection=(DBConnection)context.getBean("DBConnection");
-		dataSource=(DataSource)context.getBean("dataSource");
-		try
-		{
-		dataSource.getConnection(username, password);
-		connection.setDataSource(dataSource);
+		dataSource=(MysqlDataSource)context.getBean("dataSource");
+		dataSource.setUser(username);
+		dataSource.setPassword(password);
+		JdbcTemplate jdbcTemplateObject=new JdbcTemplate(dataSource);
 		window.setVisible(false);
 		factory = new WindowFactory();
 		windowl = factory.create_window(username,connection);
 		windowl.setVisible(true);
-		}
-		catch(Exception e)
-		{
-			System.out.println("Wrong password or username");
-			
-		}
-
-		
 	}
 	public static void main(String[] args) {
 		setupWindow();
