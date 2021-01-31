@@ -23,6 +23,7 @@ class LoginWindow extends JFrame{
 	JPasswordField passwordField;
 	JButton acceptButton;
 	JLabel errorMessage;
+	String defaultUser="kacper", defaultPass="12345";
 	
 	public LoginWindow() {
 		super("Login");
@@ -63,35 +64,39 @@ class LoginWindow extends JFrame{
 		MysqlDataSource dataSource;
 		ApplicationContext context;
 		DBConnection connection;
+		JdbcTemplate jdbcTemplateObject;
+		
 		
 		context=new ClassPathXmlApplicationContext("file:src/main/java/beans.xml");
 		connection=(DBConnection)context.getBean("DBConnection");
-		dataSource=(MysqlDataSource)context.getBean("dataSource2");
+		dataSource=(MysqlDataSource)context.getBean("dataSource");
+		jdbcTemplateObject=new JdbcTemplate(dataSource);
 		try {
-			dataSource.setUser("kacper");
-			dataSource.setPassword("12345");
-			JdbcTemplate jdbcTemplateObject=new JdbcTemplate(dataSource);
+			dataSource.setUser(defaultUser);
+			dataSource.setPassword(defaultPass);
 			String SQL="SHOW DATABASES;";
 			List<String> databases=jdbcTemplateObject.queryForList(SQL, String.class);
 			if(databases.contains("gameshop")) {
 				dataSource=(MysqlDataSource)context.getBean("dataSource2");
 				dataSource.setUser(username);
 				dataSource.setPassword(password);
+				jdbcTemplateObject.setDataSource(dataSource);
 				dataSource.getConnection();
 				factory=new WindowFactory(connection);
 				mainMenu=factory.create_window(username);
 				mainMenu.setLocation(350, 250);
 				mainMenu.setVisible(true);
+				mainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			} else {
 				throw new Exception("Database doesn't exist!");
 			}
-			setVisible(false);
 		} catch(SQLException e) {
 			errorMessage.setText("Wrong username or password!");
 		} catch(NullPointerException e) {
 			errorMessage.setText("User not supported!");
 		} catch(Exception e) {
-			errorMessage.setText(e.getMessage());
+			errorMessage.setText("Creating gameshop database, please try again.");
+			jdbcTemplateObject.execute("CREATE DATABASE gameshop;");
 		}
 	}
 	
@@ -101,6 +106,7 @@ public class GameShop {
 
 	public static void main(String[] args) {
 		new LoginWindow();
+		
 	}
 
 }

@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import com.mysql.cj.jdbc.MysqlDataSource;
@@ -19,6 +21,7 @@ public class DBConnection {
     private MysqlDataSource dataSource;
     private JFrame window;
     private JdbcTemplate jdbcTemplateObject;
+    private String defaultUser="kacper", defaultPass="12345";
     public void setDataSource(MysqlDataSource dataSource){
     	  window = new JFrame();
           this.dataSource = dataSource;
@@ -245,7 +248,7 @@ return result;
     }
     public String databaseBackup(String savePath)
     {
-    	String executeCmd = "mysqldump -uAdmin -pAdminpass --database gameshop -r ~/Pobrane/ProjektBD/backup.sql";
+    	String executeCmd = "mysqldump -u" + defaultUser + " -p" + defaultPass + " --routines --databases gameshop -r " + savePath;
     	String[] cmdArray=new String[]{"/bin/sh", "-c", executeCmd};
     	 try {
     		 
@@ -266,6 +269,14 @@ return result;
     }
     public String databaseRestore(String restorePath)
     {
+    	ApplicationContext context=new ClassPathXmlApplicationContext("file:src/main/java/beans.xml");
+    	MysqlDataSource newDataSource=(MysqlDataSource)context.getBean("dataSource");
+    	newDataSource.setUser(defaultUser);
+    	newDataSource.setPassword(defaultPass);
+    	jdbcTemplateObject.setDataSource(newDataSource);
+    	String SQL="CREATE DATABASE IF NOT EXISTS gameshop;";
+    	jdbcTemplateObject.execute(SQL);
+    	jdbcTemplateObject.setDataSource(this.dataSource);
     	 String executeCmd = "mysql -ukacper -p12345 gameshop < " + restorePath;
     	 String[] cmdArray=new String[]{"/bin/sh", "-c", executeCmd};
     	try {
